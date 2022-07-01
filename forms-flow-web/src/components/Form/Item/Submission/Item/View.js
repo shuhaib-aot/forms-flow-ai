@@ -17,6 +17,7 @@ import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
+import { CUSTOM_SUBMISSION_URL } from "../../../../../constants/constants";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -31,9 +32,20 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
+
+  const customSubmission = useSelector((state) => state.formDelete.customSubmission);
+
+  let updatedSubmission;
+  if(CUSTOM_SUBMISSION_URL){
+    updatedSubmission = customSubmission;
+  }else {
+    updatedSubmission = submission;
+  }
+
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
+
 
   return (
     <div className="container row task-container">
@@ -62,7 +74,7 @@ const View = React.memo((props) => {
         <div className="sub-container">
           <Form
             form={form}
-            submission={submission}
+            submission={updatedSubmission}
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}

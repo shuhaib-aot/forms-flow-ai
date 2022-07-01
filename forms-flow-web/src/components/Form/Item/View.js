@@ -38,7 +38,7 @@ import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 import { CUSTOM_SUBMISSION_URL, MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { customSubmissionPost } from "../../../apiManager/services/FormServices";
+import { postCustomSubmission } from "../../../apiManager/services/FormServices";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -335,7 +335,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
       if(CUSTOM_SUBMISSION_URL) {
-        customSubmissionPost(submission,callBack);
+        postCustomSubmission(submission,callBack);
       } else {
         dispatch(
           saveSubmission("submission", submission, formId,callBack)
