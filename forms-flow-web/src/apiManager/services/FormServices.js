@@ -1,4 +1,4 @@
-import {  httpPOSTRequest, httpGETRequest} from "../httpRequestHandler";
+import {  httpPOSTRequest, httpGETRequest, httpPUTRequest} from "../httpRequestHandler";
 // httpGETRequest,
 import API from "../endpoints";
 import UserService from "../../services/UserService";
@@ -30,6 +30,18 @@ export const postCustomSubmission = (data,...rest)=>{
     done(err,null);
   });
 };
+
+export const updateCustomSubmission = (data,...rest)=>{
+  const done = rest.length ? rest[0] : () => {};
+  httpPUTRequest(`${CUSTOM_SUBMISSION_URL}/${data._id}`,data,UserService.getToken()).then((res)=>{
+    if(res.data){
+      done(null,res.data);
+    }
+  }).catch((err)=>{
+    done(err,null);
+  });
+};
+
 
 export const getCustomSubmission = (id,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
