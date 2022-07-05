@@ -46,7 +46,7 @@ export const updateCustomSubmission = (data,...rest)=>{
 export const getCustomSubmission = (id,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
   return (dispatch)=>{
-    httpGETRequest(`${CUSTOM_SUBMISSION_URL}/${id}`,UserService.getToken()).then((res)=>{
+    httpGETRequest(`${CUSTOM_SUBMISSION_URL}/${id}`,{},UserService.getToken()).then((res)=>{
       if(res.data){
         dispatch(setCustomSubmission(res.data));
       }
