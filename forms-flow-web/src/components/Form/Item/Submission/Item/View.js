@@ -18,6 +18,7 @@ import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
 import { CUSTOM_SUBMISSION_URL } from "../../../../../constants/constants";
+import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -106,26 +107,32 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission(
-          "submission",
-          submission,
-          ownProps.match.params.formId,
-          (err, submission) => {
-            if (!err) {
-              dispatch(resetSubmissions("submission"));
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(
-                push(
-                  `/form/${ownProps.match.params.formId}/submission/${submission._id}`
-                )
-              );
-            } else {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          }
-        )
-      );
+      const callBack = (err, submission) => {
+        if (!err) {
+          dispatch(resetSubmissions("submission"));
+          dispatch(setFormSubmissionLoading(false));
+          dispatch(
+            push(
+              `/form/${ownProps.match.params.formId}/submission/${submission._id}`
+            )
+          );
+        } else {
+          dispatch(setFormSubmissionLoading(false));
+        }
+      };
+      if(CUSTOM_SUBMISSION_URL){
+        updateCustomSubmission(submission,callBack);
+      }else{
+        dispatch(
+          saveSubmission(
+            "submission",
+            submission,
+            ownProps.match.params.formId,
+            callBack
+          )
+        );
+      }
+    
     },
   };
 };

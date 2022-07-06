@@ -241,8 +241,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
       if(CUSTOM_SUBMISSION_URL){
-        // console.log(submission);
-        updateCustomSubmission(submission);
+        updateCustomSubmission(submission,callBack);
       }
       dispatch(
         saveSubmission(
