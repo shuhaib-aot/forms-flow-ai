@@ -6,7 +6,11 @@ from .constants import (
     ALLOW_ALL_APPLICATIONS,
     ALLOW_ALL_ORIGINS,
     ANONYMOUS_USER,
+<<<<<<< HEAD
     CLIENT_GROUP,
+=======
+    CHROME_DRIVER_PATH,
+>>>>>>> 933a5ea9 (updated chrome driver path)
     CORS_ORIGINS,
     DEFAULT_PROCESS_KEY,
     DEFAULT_PROCESS_NAME,
