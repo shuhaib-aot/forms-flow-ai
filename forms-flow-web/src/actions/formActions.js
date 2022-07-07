@@ -154,3 +154,11 @@ export const clearSubmissionError = (name) => (dispatch) => {
   });
 };
 
+export const failSubmission = (name, err) => {
+  return {
+    type: ACTION_CONSTANTS.SUBMISSION_FAILURE,
+    name,
+    error: err
+  };
+};
+

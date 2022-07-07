@@ -17,6 +17,7 @@ import { useTranslation, Translation } from "react-i18next";
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import {
+  failSubmission,
   setFormFailureErrorData,
   setFormRequestData,
   setFormSubmissionError,
@@ -38,7 +39,7 @@ import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 import { CUSTOM_SUBMISSION_URL, MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { postCustomSubmission } from "../../../apiManager/services/FormServices";
+import { fromSubmissionValidate, postCustomSubmission } from "../../../apiManager/services/FormServices";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -213,7 +214,7 @@ const View = React.memo((props) => {
             }}
             hideComponents={hideComponents}
             onSubmit={(data) => {
-              onSubmit(data, form._id);
+              onSubmit(data, form);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
           />
@@ -312,7 +313,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission, formId) => {
+    onSubmit: (submission, form) => {
       dispatch(setFormSubmissionLoading(true));
       // this is callback function for submission
       const callBack = (err, submission) => {
@@ -335,10 +336,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
       if(CUSTOM_SUBMISSION_URL) {
-        postCustomSubmission(submission,callBack);
+        fromSubmissionValidate(form.path,submission,(err,submission)=>{
+          if(err){
+            dispatch(failSubmission("submission",err));
+          }else{
+            postCustomSubmission(submission,callBack);
+          }
+        });
       } else {
         dispatch(
-          saveSubmission("submission", submission, formId,callBack)
+          saveSubmission("submission", submission, form._id,callBack)
         );
       }
       

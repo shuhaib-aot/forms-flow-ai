@@ -1,4 +1,4 @@
-import {  httpPOSTRequest, httpGETRequest, httpPUTRequest} from "../httpRequestHandler";
+import {  httpPOSTRequest, httpGETRequest, httpPUTRequest, httpPostReqFormio} from "../httpRequestHandler";
 // httpGETRequest,
 import API from "../endpoints";
 import UserService from "../../services/UserService";
@@ -18,6 +18,23 @@ export const formCreate = (formData, ...rest) => {
       done(err.message);
     } 
    });
+};
+
+export const fromSubmissionValidate = (formPath,data,...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const formioApiUrl = localStorage.getItem("formioApiUrl");
+  httpPostReqFormio(`${formioApiUrl}/${formPath}/validate`,data).then((res)=>{
+    console.log(res);
+   if(res.data){
+    // done(null,res.data);
+   }
+  }).catch(err=>{
+    if(err.response?.data){
+      done(err.response.data);
+    }else{
+      done(err.message);
+    } 
+  });
 };
 
 export const postCustomSubmission = (data,...rest)=>{

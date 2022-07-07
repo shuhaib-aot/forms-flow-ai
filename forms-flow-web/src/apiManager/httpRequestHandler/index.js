@@ -68,6 +68,8 @@ export const httpPUTRequest = (url, data, token, isBearer = true) => {
   });
 };
 
+
+
 export const httpDELETERequest = (url, token, isBearer = true) => {
   return axios.delete(url, {
     headers: {
@@ -75,6 +77,16 @@ export const httpDELETERequest = (url, token, isBearer = true) => {
         ? `Bearer ${token || UserService.getToken()}`
         : token,
     },
+  });
+};
+
+
+export const httpPostReqFormio = (url,data)=>{
+  return axios.post(url,data,{
+    headers:{
+      'Content-Type': 'application/json',
+      'x-jwt-token' : localStorage.getItem('formioToken')
+    }
   });
 };
 
