@@ -2,8 +2,8 @@ import {  httpPOSTRequest, httpGETRequest, httpPUTRequest} from "../httpRequestH
 // httpGETRequest,
 import API from "../endpoints";
 import UserService from "../../services/UserService";
-import { CUSTOM_SUBMISSION_URL } from "../../constants/constants";
 import { setCustomSubmission } from "../../actions/checkListActions";
+import { replaceUrl } from "../../helper/helper";
 
 export const formCreate = (formData, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -20,9 +20,11 @@ export const formCreate = (formData, ...rest) => {
    });
 };
 
-export const postCustomSubmission = (data,...rest)=>{
+export const postCustomSubmission = (data,formId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
-  httpPOSTRequest(CUSTOM_SUBMISSION_URL,data,UserService.getToken()).then((res)=>{
+  let newUrl = replaceUrl(API.CUSTOM_SUBMISSION,"<form_id>",formId);
+  httpPOSTRequest(`${newUrl}`,data,UserService.getToken())
+  .then((res)=>{
     if(res.data){
       done(null,res.data);
     }
@@ -31,9 +33,12 @@ export const postCustomSubmission = (data,...rest)=>{
   });
 };
 
-export const updateCustomSubmission = (data,...rest)=>{
+export const updateCustomSubmission = (data,formId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
-  httpPUTRequest(`${CUSTOM_SUBMISSION_URL}/${data._id}`,data,UserService.getToken()).then((res)=>{
+  let newUrl = replaceUrl(API.CUSTOM_SUBMISSION,"<form_id>",formId);
+  httpPUTRequest(`${newUrl}/${data._id}`,data,
+  UserService.getToken())
+  .then((res)=>{
     if(res.data){
       done(null,res.data);
     }
@@ -43,10 +48,14 @@ export const updateCustomSubmission = (data,...rest)=>{
 };
 
 
-export const getCustomSubmission = (id,...rest)=>{
+export const getCustomSubmission = (submissionId,formId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
+  let newUrl = replaceUrl(API.CUSTOM_SUBMISSION,"<form_id>",formId);
+
   return (dispatch)=>{
-    httpGETRequest(`${CUSTOM_SUBMISSION_URL}/${id}`,{},UserService.getToken()).then((res)=>{
+    httpGETRequest(`${newUrl}/${submissionId}`,
+    {},UserService.getToken())
+    .then((res)=>{
       if(res.data){
         dispatch(setCustomSubmission(res.data));
       }

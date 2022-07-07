@@ -21,6 +21,7 @@ import { getUserRolePermission } from "../../../../../helper/user";
 import {
   CLIENT,
   CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
 } from "../../../../../constants/constants";
 import {
@@ -84,7 +85,7 @@ const Edit = React.memo((props) => {
     onFormSubmit,
   ]);
   let updatedSubmission ;
-  if(CUSTOM_SUBMISSION_URL){
+  if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
     updatedSubmission = customSubmission;
   }else{
     updatedSubmission = submission;
@@ -240,8 +241,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionError(ErrorDetails));
         }
       };
-      if(CUSTOM_SUBMISSION_URL){
-        updateCustomSubmission(submission,callBack);
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+        updateCustomSubmission(submission,
+          onFormSubmit ? formId : ownProps.match.params.formId,
+          callBack);
       }
       dispatch(
         saveSubmission(

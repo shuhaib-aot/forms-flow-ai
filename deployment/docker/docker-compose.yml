@@ -118,8 +118,7 @@ services:
       context: ./../../forms-flow-web/
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=${NODE_ENV:-development}
-        - GENERATE_SOURCEMAP=false
+        - NODE_ENV=${NODE_ENV:-production}
         - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
         - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
         - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
@@ -143,6 +142,8 @@ services:
         - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
         - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
         - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
+        - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${CUSTOM_SUBMISSION_URL}
+        - REACT_APP_CUSTOM_SUBMISSION_ENABLED=${CUSTOM_SUBMISSION_ENABLED}
     ports:
       - '3000:8080'
     tty: true
@@ -199,7 +200,7 @@ services:
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
-      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme},
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
 
     stdin_open: true # -i

@@ -3,7 +3,6 @@
 import json
 import string
 from http import HTTPStatus
-from urllib.parse import urlparse
 
 from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource
@@ -389,7 +388,7 @@ class FormioFormResource(Resource):
             return err.error, err.status_code
 
 
-@API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
+@API.route("/<string:form_id>/submission/<string:submission_id>/render")
 class FormResourceRenderFormPdf(Resource):
     """Resource to render form and submission details as html."""
 
@@ -429,9 +428,8 @@ class FormResourceExportFormPdf(Resource):
         """PDF generation and rendering method."""
         try:
             if auth.has_role([REVIEWER_GROUP]):
-                host = urlparse(request.base_url)
                 token = request.headers.get("Authorization")
-                host_name = host.scheme + "://" + host.netloc
+                host_name = current_app.config.get("FORMSFLOW_API_URL")
                 url = (
                     host_name
                     + "/form/"

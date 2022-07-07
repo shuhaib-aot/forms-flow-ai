@@ -418,6 +418,13 @@ i.fa.fa-question-circle.text-muted {
   height: 30px;
   width: 100%;
 }
+@media (max-width: 768px) {
+  .main-header{
+    height: 70px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
 .back-icon{
   display: flex;
 }
@@ -603,7 +610,6 @@ div[disabled] {
 .select_download{
   display: flex;
   flex-direction: row;
-  margin-top: 15px;
 }
 .select_text{
   font-weight: bold;
