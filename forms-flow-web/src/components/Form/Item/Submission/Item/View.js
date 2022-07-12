@@ -17,13 +17,8 @@ import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
-<<<<<<< HEAD
 import { CUSTOM_SUBMISSION_URL } from "../../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
-=======
-import { DownloadPDFButton } from '../../../ExportAsPdf/downloadPdfButton';
-
->>>>>>> b91143399f3a8bbc60e82ae2afda845dc3a30fc1
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
