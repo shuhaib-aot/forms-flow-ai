@@ -7,6 +7,7 @@ import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import NotFound from "../../NotFound";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -33,6 +34,9 @@ const Preview = class extends PureComponent {
     const tenantKey = tenants?.tenantId;
     if (isFormActive) {
       return <Loading />;
+    }
+    if(errors){
+      return <NotFound errorMessage={"Bad Request"} errorCode={400} />;
     }
     return (
       <div className="container">

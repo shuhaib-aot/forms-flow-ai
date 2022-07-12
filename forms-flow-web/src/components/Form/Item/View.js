@@ -38,6 +38,7 @@ import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import NotFound from "../../NotFound";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -142,6 +143,11 @@ const View = React.memo((props) => {
       }
     }
   }, [publicFormStatus]);
+
+    if(errors.length > 0 && errors[0].response){
+      return <NotFound errorMessage={errors[0].response?.statusText}
+      errorCode={errors[0].response?.status} />;
+    }
 
   if (isActive || isPublicStatusLoading) {
     return (
