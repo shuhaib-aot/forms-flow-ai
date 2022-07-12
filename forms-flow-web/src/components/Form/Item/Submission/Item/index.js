@@ -43,7 +43,7 @@ const Item = React.memo(() => {
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
     if(CUSTOM_SUBMISSION_URL) {
-       dispatch(getCustomSubmission(submissionId));
+       dispatch(getCustomSubmission(submissionId,formId));
     } else {
       dispatch(getSubmission("submission", submissionId, formId));
     }

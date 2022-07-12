@@ -47,7 +47,7 @@ const ViewApplication = React.memo(() => {
           if (res.submissionId && res.formId) {
             dispatch(getForm("form", res.formId));
             if(CUSTOM_SUBMISSION_URL){
-              dispatch(getCustomSubmission(res.submissionId));
+              dispatch(getCustomSubmission(res.submissionId,res.formId));
             }else{
               dispatch(getSubmission("submission", res.submissionId, res.formId));
             }

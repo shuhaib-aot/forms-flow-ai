@@ -101,7 +101,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       Formio.clearCache();
       dispatch(getForm("form", formId));
       if(CUSTOM_SUBMISSION_URL){
-        dispatch(getCustomSubmission(submissionId));
+        dispatch(getCustomSubmission(submissionId,formId));
       }else{
         dispatch(getSubmission("submission", submissionId, formId));
       }

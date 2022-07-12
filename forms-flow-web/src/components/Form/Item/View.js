@@ -335,7 +335,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
       if(CUSTOM_SUBMISSION_URL) {
-        postCustomSubmission(submission,callBack);
+        postCustomSubmission(submission,formId,callBack);
       } else {
         dispatch(
           saveSubmission("submission", submission, formId,callBack)

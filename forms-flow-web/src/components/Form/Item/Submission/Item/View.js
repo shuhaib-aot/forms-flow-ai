@@ -130,7 +130,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
       if(CUSTOM_SUBMISSION_URL){
-        updateCustomSubmission(submission,callBack);
+        updateCustomSubmission(submission,ownProps.match.params.formId,callBack);
       }else{
         dispatch(
           saveSubmission(

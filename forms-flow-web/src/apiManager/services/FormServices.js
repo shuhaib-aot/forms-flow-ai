@@ -20,9 +20,10 @@ export const formCreate = (formData, ...rest) => {
    });
 };
 
-export const postCustomSubmission = (data,...rest)=>{
+export const postCustomSubmission = (data,formId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
-  httpPOSTRequest(CUSTOM_SUBMISSION_URL,data,UserService.getToken()).then((res)=>{
+  httpPOSTRequest(`${CUSTOM_SUBMISSION_URL}/form/${formId}/submission`,data,UserService.getToken())
+  .then((res)=>{
     if(res.data){
       done(null,res.data);
     }
@@ -31,9 +32,11 @@ export const postCustomSubmission = (data,...rest)=>{
   });
 };
 
-export const updateCustomSubmission = (data,...rest)=>{
+export const updateCustomSubmission = (data,formId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
-  httpPUTRequest(`${CUSTOM_SUBMISSION_URL}/${data._id}`,data,UserService.getToken()).then((res)=>{
+  httpPUTRequest(`${CUSTOM_SUBMISSION_URL}/form/${formId}/submission/${data._id}`,data,
+  UserService.getToken())
+  .then((res)=>{
     if(res.data){
       done(null,res.data);
     }
@@ -43,10 +46,12 @@ export const updateCustomSubmission = (data,...rest)=>{
 };
 
 
-export const getCustomSubmission = (id,...rest)=>{
+export const getCustomSubmission = (submissionId,formId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
   return (dispatch)=>{
-    httpGETRequest(`${CUSTOM_SUBMISSION_URL}/${id}`,{},UserService.getToken()).then((res)=>{
+    httpGETRequest(`${CUSTOM_SUBMISSION_URL}/form/${formId}/submission/${submissionId}`,
+    {},UserService.getToken())
+    .then((res)=>{
       if(res.data){
         dispatch(setCustomSubmission(res.data));
       }
