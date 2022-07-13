@@ -15,7 +15,7 @@ import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
-import { CUSTOM_SUBMISSION_URL } from "../../../../../constants/constants";
+import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE } from "../../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 import { DownloadPDFButton } from '../../../ExportAsPdf/downloadPdfButton';
 const View = React.memo((props) => {
@@ -36,7 +36,7 @@ const View = React.memo((props) => {
   const customSubmission = useSelector((state) => state.formDelete.customSubmission);
 
   let updatedSubmission;
-  if(CUSTOM_SUBMISSION_URL){
+  if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
     updatedSubmission = customSubmission;
   }else {
     updatedSubmission = submission;
@@ -116,7 +116,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionLoading(false));
         }
       };
-      if(CUSTOM_SUBMISSION_URL){
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
         updateCustomSubmission(submission,ownProps.match.params.formId,callBack);
       }else{
         dispatch(

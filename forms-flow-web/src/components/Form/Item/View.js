@@ -37,7 +37,7 @@ import { setFormSubmitted } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
-import { CUSTOM_SUBMISSION_URL, MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { postCustomSubmission } from "../../../apiManager/services/FormServices";
 
 const View = React.memo((props) => {
@@ -334,7 +334,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionError(ErrorDetails));
         }
       };
-      if(CUSTOM_SUBMISSION_URL) {
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
         postCustomSubmission(submission,formId,callBack);
       } else {
         dispatch(

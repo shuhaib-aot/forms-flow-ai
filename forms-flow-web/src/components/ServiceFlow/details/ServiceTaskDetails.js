@@ -30,7 +30,7 @@ import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { setFormSubmissionLoading } from "../../../actions/formActions";
 import { useTranslation } from "react-i18next";
-import { CUSTOM_SUBMISSION_URL, MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE,  MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 
 const ServiceFlowTaskDetails = React.memo(() => {
@@ -100,7 +100,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
       dispatch(getForm("form", formId));
-      if(CUSTOM_SUBMISSION_URL){
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
         dispatch(getCustomSubmission(submissionId,formId));
       }else{
         dispatch(getSubmission("submission", submissionId, formId));

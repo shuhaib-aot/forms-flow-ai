@@ -12,6 +12,7 @@ import {
   BASE_ROUTE,
   CLIENT,
   CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
   STAFF_REVIEWER,
 } from "../../../../../constants/constants";
 import { CLIENT_EDIT_STATUS } from "../../../../../constants/applicationConstants";
@@ -42,7 +43,7 @@ const Item = React.memo(() => {
 
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
-    if(CUSTOM_SUBMISSION_URL) {
+    if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
        dispatch(getCustomSubmission(submissionId,formId));
     } else {
       dispatch(getSubmission("submission", submissionId, formId));
