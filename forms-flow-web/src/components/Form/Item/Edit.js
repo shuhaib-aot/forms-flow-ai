@@ -182,7 +182,8 @@ const Edit = React.memo(() => {
         newFormData.name = addTenankey(newFormData.name, tenantKey);
       }
     }
-    formUpdate(newFormData._id, newFormData).then((submittedData)=>{
+    formUpdate(newFormData._id, newFormData).then((res)=>{
+      const submittedData= res?.data;
       if (isMapperSaveNeeded(submittedData)) {
         const data = {
           anonymous:
