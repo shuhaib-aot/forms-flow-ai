@@ -25,8 +25,7 @@ export const formCreate = (formData, ...rest) => {
     });
 };
 
-export const formUpdate = (form_id,formData, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+export const formUpdate = (form_id,formData) => {
   return httpPUTRequest(`${API.FORM_UPDATE}/${form_id}`, formData);
 };
 
