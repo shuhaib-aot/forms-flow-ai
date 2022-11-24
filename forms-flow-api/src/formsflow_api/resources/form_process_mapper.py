@@ -385,7 +385,6 @@ class FormioFormResource(Resource):
             return err.error, err.status_code
 
 
-
 @cors_preflight("PUT,OPTIONS")
 @API.route("/form-update/<string:form_id>", methods=["PUT", "OPTIONS"])
 class FormioFormUpdateResource(Resource):
@@ -402,7 +401,7 @@ class FormioFormUpdateResource(Resource):
                 formio_service = FormioService()
                 form_io_token = formio_service.get_formio_access_token()
                 response, status = (
-                    formio_service.update_form(form_id,data, form_io_token),
+                    formio_service.update_form(form_id, data, form_io_token),
                     HTTPStatus.OK,
                 )
             else:

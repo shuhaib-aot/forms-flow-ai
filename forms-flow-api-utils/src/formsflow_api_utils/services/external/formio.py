@@ -65,7 +65,7 @@ class FormioService:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
     
-    def update_form(self, form_id,data, formio_token):
+    def update_form(self, form_id, data, formio_token):
         """Put request to formio API to update form."""
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form/{form_id}"

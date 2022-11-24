@@ -183,7 +183,7 @@ const Edit = React.memo(() => {
       }
     }
     formUpdate(newFormData._id, newFormData).then((res)=>{
-      const submittedData= res?.data;
+      const {data:submittedData} = res;
       if (isMapperSaveNeeded(submittedData)) {
         const data = {
           anonymous:
