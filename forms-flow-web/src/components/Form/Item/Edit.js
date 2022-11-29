@@ -23,6 +23,7 @@ import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
+import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -59,6 +60,7 @@ const Edit = React.memo(() => {
     (state) => state.process.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const restoreFormId = useSelector((state) => state.formRestore?.restoreFormId);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
@@ -78,6 +80,19 @@ const Edit = React.memo(() => {
     setShow(false);
     saveFormData();
   };
+
+  useEffect(()=>{
+    if(restoreFormId){
+      fetchFormById(restoreFormId).then((res)=>{
+        if(res.data){
+        dispatchFormAction({ type: "components", value: res.data.components });
+        }
+      }).catch((er)=>{
+        console.log(er);
+      });
+    }
+  });
+
   //remove tenatkey form path name
   useEffect(() => {
     if (form.path && MULTITENANCY_ENABLED) {

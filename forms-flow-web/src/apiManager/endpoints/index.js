@@ -48,6 +48,7 @@ const API = {
   GET_BPM_FORM_LIST: `${WEB_BASE_URL}/form`,
   UPDATE_ASSIGNEE_BPM_TASK: `${BPM_BASE_URL_EXT}/v1/task/<task_id>/assignee`,
   GET_FORM_BY_ALIAS: `${AppConfig.projectUrl}/<form_path>`,
+  GET_FORM_BY_ID: `${AppConfig.projectUrl}/form`,
 
   GET_GROUPS: `${WEB_BASE_URL}/groups`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,

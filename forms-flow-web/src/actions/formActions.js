@@ -154,3 +154,10 @@ export const clearSubmissionError = (name) => (dispatch) => {
   });
 };
 
+
+export const restoreForm = (form_id) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.RESTORE_FORM_ID,
+    payload:form_id,
+  });
+};

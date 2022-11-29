@@ -84,3 +84,14 @@ export const fetchFormByAlias = (path, ...rest) => {
       });
   };
 };
+
+
+
+
+export const fetchFormById = (id) => {
+  let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
+  return httpGETRequest(`${API.GET_FORM_BY_ID}/${id}`, {}, "", false, {
+    ...token
+  });
+  
+};
