@@ -8,7 +8,7 @@ import { Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import Modal from "react-bootstrap/Modal";
-import { restoreForm } from "../../../actions/formActions";
+import { restoreFormId } from "../../../actions/formActions";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -64,14 +64,14 @@ const Preview = class extends PureComponent {
     this.setState({ ...this.state, selectedRestoreId: value });
   }
 
-  handleRestore(url){
+  handleRestore(redirecUrl){
     this.props.onRestore(this.state.selectedRestoreId);
-    this.props.gotoEdit(url);
+    this.props.gotoEdit(redirecUrl);
 
   }
 
-  gotoEdit(url){
-    this.props.gotoEdit(url);
+  gotoEdit(redirecUrl){
+    this.props.gotoEdit(redirecUrl);
   }
 
   render() {
@@ -216,11 +216,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps)  => {
   return {
     onRestore:(formId)=>{
-      dispatch(restoreForm(formId));
-      //  dispatch(push(`${redirecUrl}formflow/${editFormId}/edit`));
+      dispatch(restoreFormId(formId));
     },
-    gotoEdit:(url)=>{
-      dispatch(push(url));
+    gotoEdit:(redirecUrl)=>{
+      dispatch(push(redirecUrl));
     }
   };
 };

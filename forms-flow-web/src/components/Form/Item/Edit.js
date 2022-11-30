@@ -24,6 +24,7 @@ import { formio_resourceBundles } from "../../../resourceBundles/formio_resource
 import { clearFormError } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import { restoreFormId, restoreFormData } from "../../../actions/formActions";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -60,7 +61,8 @@ const Edit = React.memo(() => {
     (state) => state.process.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const restoreFormId = useSelector((state) => state.formRestore?.restoreFormId);
+  const formIdRestore = useSelector((state) => state.formRestore?.restoreFormId);
+  // const formdataRestore = useSelector((state) => state.formRestore?.restoredFormData);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
@@ -72,6 +74,7 @@ const Edit = React.memo(() => {
   const history = useHistory();
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
+  const [currentFormLoading , setCurrentFormLoading] = useState(false);
 
   const handleClose = () => setShow(false);
 
@@ -82,16 +85,21 @@ const Edit = React.memo(() => {
   };
 
   useEffect(()=>{
-    if(restoreFormId){
-      fetchFormById(restoreFormId).then((res)=>{
+    if(formIdRestore){
+      setCurrentFormLoading(true);
+      fetchFormById(formIdRestore).then((res)=>{
         if(res.data){
+        dispatchFormAction(restoreFormData(res.data));
         dispatchFormAction({ type: "components", value: res.data.components });
+        toast.success("form restored");
         }
-      }).catch((er)=>{
-        console.log(er);
+      }).catch((err)=>{
+        toast.error(err.response.data);
+      }).finally(()=>{
+        setCurrentFormLoading(false);
       });
     }
-  });
+  },[restoreFormId]);
 
   //remove tenatkey form path name
   useEffect(() => {
@@ -275,16 +283,17 @@ const Edit = React.memo(() => {
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
+  
   // loading up to set the data to the form variable
-  if (!form._id) {
+  if (!form._id || currentFormLoading) {
     return (
       <div className="d-flex justify-content-center">
-        <div className="spinner-grow" role="status">
-          <span className="sr-only">
-            <Translation>{(t) => t("Loading...")}</Translation>
-          </span>
-        </div>
+      <div className="spinner-grow" role="status">
+        <span className="sr-only">
+          <Translation>{(t) => t("Loading...")}</Translation>
+        </span>
       </div>
+    </div>
     );
   }
 
@@ -308,6 +317,8 @@ const Edit = React.memo(() => {
                 onClick={() => {
                   changeAnonymous(prviousData.anonymous,true);
                   history.goBack();
+                  dispatch(restoreFormId(null));
+                  dispatch(restoreFormData({}));
                   dispatch(clearFormError("form", formData.formName));
                 }}
               >
