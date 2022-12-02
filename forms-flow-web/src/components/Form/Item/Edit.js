@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
+import _isEquial from "lodash/isEqual";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -21,10 +22,9 @@ import {
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
-import { clearFormError, setFormFailureErrorData } from "../../../actions/formActions";
+import { clearFormError, setFormFailureErrorData, setFormSuccessData, setRestoreFormData, setRestoreFormId } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
-import { restoreFormId, restoreFormData } from "../../../actions/formActions";
 import { formUpdate } from "../../../apiManager/services/FormServices";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -56,16 +56,14 @@ const Edit = React.memo(() => {
   const processListData = useSelector((state) => state.process.formProcessList);
   const formData = useSelector((state) => state.form.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  console.log(formData);
-  console.log(form);
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formIdRestore = useSelector((state) => state.formRestore?.restoreFormId);
-  // const formdataRestore = useSelector((state) => state.formRestore?.restoredFormData);
+  const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
+  const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
@@ -78,22 +76,21 @@ const Edit = React.memo(() => {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [currentFormLoading , setCurrentFormLoading] = useState(false);
-  console.log(form, "form");
-  console.log(formData, "formData");
-  const handleClose = () => setShow(false);
 
+  const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleSave = () => {
     setShow(false);
     saveFormData();
   };
 
+
   useEffect(()=>{
-    if(formIdRestore){
+    if(restoredFormId){
       setCurrentFormLoading(true);
-      fetchFormById(formIdRestore).then((res)=>{
+      fetchFormById(restoredFormId).then((res)=>{
         if(res.data){
-        dispatch(restoreFormData(res.data));
+        dispatch(setRestoreFormData(res.data));
         dispatchFormAction({ type: "components", value: res.data.components });
         toast.success("form restored");
         }
@@ -104,10 +101,10 @@ const Edit = React.memo(() => {
       });
     }
     return () =>{
-      dispatch(restoreFormData({}));
-      dispatch(restoreFormId(null));
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
     };
-  },[formIdRestore]);
+  },[restoredFormId]);
 
   //remove tenatkey form path name
   useEffect(() => {
@@ -182,9 +179,7 @@ const Edit = React.memo(() => {
   };
 
 
-  const isComponentChanged = () => {
-    return true;
-  };
+ 
 
   const saveFormWithDataChangeCheck = () => {
     if (isNewMapperNeeded()) {
@@ -202,15 +197,21 @@ const Edit = React.memo(() => {
       processListData.anonymous === null
     );
   };
-
-
+// to check the component changed or not
+  const isFormComponentsChanged = ()=>{
+      if(restoredFormData && restoredFormId){
+         return _isEquial(restoredFormData.components,form.components);
+      }else{
+        return _isEquial(formData.components ,form.components);
+      }
+  };
   // save form data to submit
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
-    newFormData.componentChanged = isComponentChanged();
+    newFormData.componentChanged = !isFormComponentsChanged();
     if (MULTITENANCY_ENABLED && tenantKey) {
       if (newFormData.path) {
         newFormData.path = addTenankey(newFormData.path, tenantKey);
@@ -260,8 +261,10 @@ const Edit = React.memo(() => {
           }
         }
       }
-
+      dispatch(setRestoreFormData({}));
+      dispatch(setRestoreFormId(null));
       toast.success(t("Form Saved"));
+      dispatch(setFormSuccessData("form", submittedData));
       dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
 
     }).catch((err) => {
@@ -333,8 +336,6 @@ const Edit = React.memo(() => {
                 onClick={() => {
                   changeAnonymous(prviousData.anonymous,true);
                   history.goBack();
-                  dispatch(restoreFormId(null));
-                  dispatch(restoreFormData({}));
                   dispatch(clearFormError("form", formData.formName));
                 }}
               >

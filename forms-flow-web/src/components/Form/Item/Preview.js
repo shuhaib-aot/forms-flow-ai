@@ -8,7 +8,7 @@ import { Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import Modal from "react-bootstrap/Modal";
-import { restoreFormId } from "../../../actions/formActions";
+import { setRestoreFormId } from "../../../actions/formActions";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -30,7 +30,7 @@ const Preview = class extends PureComponent {
         createdBy:"John.honai"
       },
       {
-        id:"637677f99bc6b9aadd7a5299",
+        id:"637677f99bc6b9aadd7a52df",
         path:"form-v2",
         created: new Date().toDateString(),
         createdBy:"John.honai"
@@ -216,7 +216,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps)  => {
   return {
     onRestore:(formId)=>{
-      dispatch(restoreFormId(formId));
+      dispatch(setRestoreFormId(formId));
     },
     gotoEdit:(redirecUrl)=>{
       dispatch(push(redirecUrl));

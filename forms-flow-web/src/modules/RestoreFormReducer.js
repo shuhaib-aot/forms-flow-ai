@@ -9,7 +9,7 @@ const initialState = {
 const RestoreFormReducer = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.RESTORE_FORM_ID:
-      return { ...state, restoreFormId: action.payload };
+      return { ...state, restoredFormId: action.payload };
     case ACTION_CONSTANTS.RESTORE_FORM_DATA:
       return { ...state, restoredFormData: action.payload };
     default:

@@ -237,8 +237,6 @@ class StepperPage extends PureComponent {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status ? processData.status : "inactive",
-      workflowChanged: data.processKey !== formPreviousData.processKey,
-      statusChanged: processData.status !== formPreviousData.status,
       taskVariable: formProcessList.taskVariable
         ? formProcessList.taskVariable
         : [],
@@ -261,6 +259,9 @@ class StepperPage extends PureComponent {
     if (formProcessList && formProcessList.id) {
       data.id = formProcessList.id;
     }
+
+    data.workflowChanged = data?.processKey !== formPreviousData.processKey;
+    data.statusChanged =  processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.

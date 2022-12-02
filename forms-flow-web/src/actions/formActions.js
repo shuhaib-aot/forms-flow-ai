@@ -155,14 +155,14 @@ export const clearSubmissionError = (name) => (dispatch) => {
 };
 
 
-export const restoreFormId = (form_id) => (dispatch) => {
+export const setRestoreFormId = (form_id) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.RESTORE_FORM_ID,
     payload:form_id,
   });
 };
 
-export const restoreFormData = (fromData) => (dispatch) => {
+export const setRestoreFormData = (fromData) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.RESTORE_FORM_DATA,
     payload:fromData,
