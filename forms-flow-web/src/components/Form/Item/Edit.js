@@ -56,6 +56,8 @@ const Edit = React.memo(() => {
   const processListData = useSelector((state) => state.process.formProcessList);
   const formData = useSelector((state) => state.form.form);
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
+  console.log(formData);
+  console.log(form);
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const applicationCount = useSelector(
@@ -76,7 +78,8 @@ const Edit = React.memo(() => {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [currentFormLoading , setCurrentFormLoading] = useState(false);
-
+  console.log(form, "form");
+  console.log(formData, "formData");
   const handleClose = () => setShow(false);
 
   const handleShow = () => setShow(true);
@@ -90,7 +93,7 @@ const Edit = React.memo(() => {
       setCurrentFormLoading(true);
       fetchFormById(formIdRestore).then((res)=>{
         if(res.data){
-        dispatchFormAction(restoreFormData(res.data));
+        dispatch(restoreFormData(res.data));
         dispatchFormAction({ type: "components", value: res.data.components });
         toast.success("form restored");
         }
@@ -100,7 +103,11 @@ const Edit = React.memo(() => {
         setCurrentFormLoading(false);
       });
     }
-  },[restoreFormId]);
+    return () =>{
+      dispatch(restoreFormData({}));
+      dispatch(restoreFormId(null));
+    };
+  },[formIdRestore]);
 
   //remove tenatkey form path name
   useEffect(() => {
@@ -174,6 +181,11 @@ const Edit = React.memo(() => {
     return prviousData.formName !== form.title && applicationCount > 0;
   };
 
+
+  const isComponentChanged = () => {
+    return true;
+  };
+
   const saveFormWithDataChangeCheck = () => {
     if (isNewMapperNeeded()) {
       handleShow();
@@ -191,12 +203,14 @@ const Edit = React.memo(() => {
     );
   };
 
+
   // save form data to submit
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = submissionAccess;
     newFormData.access = formAccess;
+    newFormData.componentChanged = isComponentChanged();
     if (MULTITENANCY_ENABLED && tenantKey) {
       if (newFormData.path) {
         newFormData.path = addTenankey(newFormData.path, tenantKey);
@@ -220,6 +234,8 @@ const Edit = React.memo(() => {
             : [],
           id: processListData.id,
           formId: submittedData._id,
+          anonymousChanged: prviousData.formName !==  submittedData.title,
+          titleChanged: prviousData.anonymous !== processListData.anonymous
         };
 
         // PUT request : when application count is zero.
@@ -251,7 +267,9 @@ const Edit = React.memo(() => {
     }).catch((err) => {
       const error = err.response.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
-    }).finally(setFormSubmitted(false));
+    }).finally(()=>{
+      setFormSubmitted(false);
+    });
   };
 
   // information about tenant key adding

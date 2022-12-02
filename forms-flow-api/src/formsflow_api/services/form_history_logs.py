@@ -60,7 +60,7 @@ class FormHistoryService:
             form_logs_data["change_log"]["anonymous"]= data.get("anonymous")
         if data.get("titleChanged") == True:
             form_logs_data["title"] = True
-            form_logs_data["change_log"]["title"] = data.get("title")
+            form_logs_data["change_log"]["form_name"] = data.get("formName")
             
         if len(form_logs_data.values()) > 1:
             form_logs_data["created_by"] =user_name

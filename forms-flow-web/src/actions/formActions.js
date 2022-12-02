@@ -162,10 +162,10 @@ export const restoreFormId = (form_id) => (dispatch) => {
   });
 };
 
-export const restoreFormData = (form_id) => (dispatch) => {
+export const restoreFormData = (fromData) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.RESTORE_FORM_DATA,
-    payload:form_id,
+    payload:fromData,
   });
 };
 

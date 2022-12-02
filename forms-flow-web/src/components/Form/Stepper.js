@@ -237,10 +237,13 @@ class StepperPage extends PureComponent {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status ? processData.status : "inactive",
+      workflowChanged: data.processKey !== formPreviousData.processKey,
+      statusChanged: processData.status !== formPreviousData.status,
       taskVariable: formProcessList.taskVariable
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+
     };
 
     if (workflow) {
