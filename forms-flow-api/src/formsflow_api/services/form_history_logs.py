@@ -85,7 +85,7 @@ class FormHistoryService:
         raise BusinessException(
             {
                 "type": "Invalid response data",
-                "message": ("Invalid Form Id"),
+                "message": ("No form history found"),
             },
             HTTPStatus.BAD_REQUEST,
         )

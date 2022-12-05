@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
+import moment from "moment";
 import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
 import { Button } from "react-bootstrap";
@@ -29,9 +30,13 @@ const Preview = class extends PureComponent {
   componentDidMount(){ 
     this.props.getFormHistories(this.props.form.id);
   }
+  componentWillUnmount(){
+    this.props.clearFormHistories();
+  }
 
   handleModalChange() {
-    this.setState({ ...this.state, historyModal: !this.state.historyModal });
+    this.setState({ ...this.state, historyModal: !this.state.historyModal,
+       selectedRestoreId:null });
   }
 
   handleSelectChange(value) {
@@ -61,6 +66,7 @@ const Preview = class extends PureComponent {
     } = this.props;
     const tenantKey = tenants?.tenantId;
     const redirecUrl = MULTITENANCY_ENABLED
+    
     ? `/tenant/${tenantKey}/`
     : "/";
     if (isFormActive) {
@@ -145,7 +151,7 @@ const Preview = class extends PureComponent {
                   formRestore?.formHistory.map((i)=>(
                     <tr key={i.id}>
                  
-                  <td>{i.created}</td>
+                  <td>{moment(i.created).fromNow()}</td>
                   <td>{i.createdBy}</td>
                   <td>
                      
@@ -202,10 +208,14 @@ const mapDispatchToProps = (dispatch, ownProps)  => {
     gotoEdit:(redirecUrl)=>{
       dispatch(push(redirecUrl));
     },
+    clearFormHistories:()=>{
+      dispatch(setFormHistories([]));
+    },
     getFormHistories: (formId)=>{
       getFormHistory(formId).then((res)=>{
         dispatch(setFormHistories(res.data));
       }).catch((err)=>{
+        dispatch(setFormHistories([]));
         console.log(err);
       });
     }
