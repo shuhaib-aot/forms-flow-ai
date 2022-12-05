@@ -169,3 +169,11 @@ export const setRestoreFormData = (fromData) => (dispatch) => {
   });
 };
 
+export const setFormHistories = (historyData) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_HISTORY,
+    payload:historyData,
+  });
+};
+
+

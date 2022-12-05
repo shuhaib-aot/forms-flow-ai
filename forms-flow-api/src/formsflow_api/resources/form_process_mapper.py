@@ -13,12 +13,16 @@ from formsflow_api_utils.utils import (
     cors_preflight,
     profiletime,
 )
-from formsflow_api.services import FormHistoryService
+
 from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import ApplicationService, FormProcessMapperService
+from formsflow_api.services import (
+    ApplicationService,
+    FormHistoryService,
+    FormProcessMapperService,
+)
 
 
 class NullableString(fields.String):
@@ -278,11 +282,15 @@ class FormResourceList(Resource):
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             mapper = FormProcessMapperService.create_mapper(dict_data)
+           
+            
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
+            
+            
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
-            FormHistoryService.created_form_logs_without_clone(data=mapper_json)
             
+            FormHistoryService.created_form_logs_without_clone(data=mapper_json)
             return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
@@ -409,7 +417,7 @@ class FormResourceById(Resource):
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
             FormHistoryService.created_form_logs_without_clone(data=application_json)
-            
+
             return (
                 response,
                 HTTPStatus.OK,
@@ -621,7 +629,7 @@ class FormioFormResource(Resource):
                 formio_service.create_form(data, form_io_token),
                 HTTPStatus.CREATED,
             )
-            FormHistoryService.create_form_log_with_clone(data=data)
+            FormHistoryService.create_form_log_with_clone(data={**response,"componentChanged":True})
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)
@@ -678,7 +686,7 @@ class FormHistoryResource(Resource):
         """Getting form history."""
         try:
             FormProcessMapperService.check_tenant_authorization_by_formid(
-            form_id=form_id
+                form_id=form_id
             )
             return FormHistoryService.get_all_history(form_id)
         except BusinessException as err:

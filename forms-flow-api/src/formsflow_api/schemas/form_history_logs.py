@@ -15,4 +15,4 @@ class FormHistorySchema(Schema):
     form_id = fields.Str(data_key="formId")
     created_by = fields.Str(data_key="createdBy")
     created = fields.Str(data_key="created")
-    change_log = fields.Nested(data_key="changeLog")
+    change_log = fields.Dict(data_key="changeLog")

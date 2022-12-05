@@ -8,7 +8,8 @@ import { Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import Modal from "react-bootstrap/Modal";
-import { setRestoreFormId } from "../../../actions/formActions";
+import { setFormHistories, setRestoreFormId } from "../../../actions/formActions";
+import { getFormHistory } from "../../../apiManager/services/FormServices";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -19,41 +20,14 @@ const Preview = class extends PureComponent {
       workflow: null,
       status: null,
       historyModal: false,
-      selectedRestoreId:1,
+      selectedRestoreId:null,
     };
    
-    this.history = [
-      {
-        id:1,
-        path:"form-v1",
-        created: new Date().toDateString(),
-        createdBy:"John.honai"
-      },
-      {
-        id:"637677f99bc6b9aadd7a52df",
-        path:"form-v2",
-        created: new Date().toDateString(),
-        createdBy:"John.honai"
-      },
-      {
-        id:3,
-        path:"form-v3",
-        created: new Date().toDateString(),
-        createdBy:"John.honai"
-      },
-      {
-        id:4,
-        path:"form-v4",
-        created: new Date().toDateString(),
-        createdBy:"John.honai"
-      },
-      {
-        id:5,
-        path:"form-v5",
-        created: new Date().toDateString(),
-        createdBy:"John.honai"
-      }
-    ];
+ 
+  }
+
+  componentDidMount(){ 
+    this.props.getFormHistories(this.props.form.id);
   }
 
   handleModalChange() {
@@ -83,6 +57,7 @@ const Preview = class extends PureComponent {
       form: { form, isActive: isFormActive },
       handleNext,
       tenants,
+      formRestore
     } = this.props;
     const tenantKey = tenants?.tenantId;
     const redirecUrl = MULTITENANCY_ENABLED
@@ -140,9 +115,11 @@ const Preview = class extends PureComponent {
               Form History
             </Modal.Title>
             <div>
-              <button onClick={()=>{
-                this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`);
-              }} className="btn btn-primary btn-small">Restore</button>
+              {formRestore?.formHistory.length ? (
+                <button onClick={()=>{
+                  this.handleRestore(`${redirecUrl}formflow/${form._id}/edit`);
+                }} className="btn btn-primary btn-small">Restore</button>
+              ) : null}
               <button
                 onClick={() => {
                   this.handleModalChange();
@@ -154,10 +131,10 @@ const Preview = class extends PureComponent {
             </div>
           </Modal.Header>
           <Modal.Body>
-            <table className="table table-borderless">
+            {formRestore?.formHistory.length ? ( <table className="table table-borderless">
               <thead>
                 <tr>
-                  <th scope="col">Path  Name</th>
+                  
                   <th scope="col">created</th>
                   <th scope="col">createdBy</th>
                   <th scope="col">Select</th>
@@ -165,15 +142,15 @@ const Preview = class extends PureComponent {
               </thead>
               <tbody>
                 {
-                  this.history.map((i)=>(
+                  formRestore?.formHistory.map((i)=>(
                     <tr key={i.id}>
-                  <th>{i.path}</th>
+                 
                   <td>{i.created}</td>
                   <td>{i.createdBy}</td>
                   <td>
                      
-                  <div className="round" onClick={()=>{this.handleSelectChange(i.id);}} >
-                       <input type="checkbox" readOnly checked={i.id === this.state.selectedRestoreId}  />
+                  <div className="round" onClick={()=>{this.handleSelectChange(i.changeLog.cloned_form_id);}} >
+                       <input type="checkbox" readOnly checked={i.changeLog.cloned_form_id === this.state.selectedRestoreId}  />
                      <span ></span>
                   </div>
                  
@@ -184,7 +161,10 @@ const Preview = class extends PureComponent {
                 
                  
               </tbody>
-            </table>
+            </table>) : (
+              <p>No histories found</p>
+            )}
+           
           </Modal.Body>
         </Modal>
 
@@ -209,6 +189,7 @@ const mapStateToProps = (state) => {
     },
     errors: [selectError("form", state)],
     tenants: selectRoot("tenants", state),
+    formRestore:selectRoot("formRestore", state)
   };
 };
 
@@ -220,6 +201,13 @@ const mapDispatchToProps = (dispatch, ownProps)  => {
     },
     gotoEdit:(redirecUrl)=>{
       dispatch(push(redirecUrl));
+    },
+    getFormHistories: (formId)=>{
+      getFormHistory(formId).then((res)=>{
+        dispatch(setFormHistories(res.data));
+      }).catch((err)=>{
+        console.log(err);
+      });
     }
   };
 };
