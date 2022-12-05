@@ -206,7 +206,14 @@ class FormResourceList(Resource):
             sort_order: str = dict_data.get("sort_order", "desc")
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list]
-            if (
+            if auth.has_role([DESIGNER_GROUP]):
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_forms(
+                    page_no, limit, form_name, sort_by, sort_order
+                )
+            elif (
                 auth_form_details.get("adminGroupEnabled") is True
                 or "*" in resource_list
             ):
@@ -282,14 +289,12 @@ class FormResourceList(Resource):
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             mapper = FormProcessMapperService.create_mapper(dict_data)
-           
-            
+
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
-            
-            
+
             response = mapper_schema.dump(mapper)
             response["taskVariable"] = json.loads(response["taskVariable"])
-            
+
             FormHistoryService.created_form_logs_without_clone(data=mapper_json)
             return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except
@@ -629,7 +634,9 @@ class FormioFormResource(Resource):
                 formio_service.create_form(data, form_io_token),
                 HTTPStatus.CREATED,
             )
-            FormHistoryService.create_form_log_with_clone(data={**response,"componentChanged":True})
+            FormHistoryService.create_form_log_with_clone(
+                data={**response, "componentChanged": True}
+            )
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)

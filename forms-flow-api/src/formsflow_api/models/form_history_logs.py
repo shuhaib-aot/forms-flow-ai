@@ -24,7 +24,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
 
     @classmethod
     def create_history(cls, data) -> "FormHistory":
-        """Creating form history"""
+        """Creating form history."""
         if data:
             history = FormHistory()
             history.form_id = data.get("form_id")
@@ -42,16 +42,16 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
 
     @classmethod
     def fetch_histories_by_parent_id(cls, form_id) -> List["FormHistory"]:
-        """Fetch all histories against a form id"""
+        """Fetch all histories against a form id."""
         assert form_id is not None
         return cls.query.filter(
-            and_(cls.form_id == form_id , cls.component_change == True)
+            and_(cls.form_id == form_id, cls.component_change.is_(True))
         ).all()
 
     @classmethod
     def get_count_of_all_history(cls, form_id) -> List["FormHistory"]:
-        """Get all count fo history"""
+        """Get all count fo history."""
         assert form_id is not None
         return cls.query.filter(
-          and_(cls.form_id == form_id , cls.component_change == True) 
+            and_(cls.form_id == form_id, cls.component_change.is_(True))
         ).count()

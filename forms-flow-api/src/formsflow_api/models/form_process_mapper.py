@@ -159,6 +159,34 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return active
 
     @classmethod
+    def find_all_forms(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        **filters,
+    ):  # pylint: disable=too-many-arguments
+        """Fetch all active and inactive forms which are not deleted."""
+        query = cls.filter_conditions(**filters)
+        query = query.filter(FormProcessMapper.deleted.is_(False))
+        query = cls.tenant_authorization(query=query)
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
+
+        total_count = query.count()
+        query = query.with_entities(
+            cls.id,
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+        )
+        limit = total_count if limit is None else limit
+        query = query.paginate(page_number, limit)
+        return query.items, total_count
+
+    @classmethod
     def find_all_active(
         cls,
         page_number=None,

@@ -16,11 +16,13 @@ class FormHistoryService:
     @staticmethod
     @user_context
     def create_form_log_with_clone(data, **kwargs):
-        """Create form history"""
+        """Create form history.
+
+        If the component changed then we can create a clone.
+        """
         user: UserContext = kwargs["user"]
         assert data is not None
-        """If the component changed then we can create a clone"""
-        if data.get("componentChanged") == True:
+        if data.get("componentChanged") is True:
             form_id = data.get("_id")
             history_count = FormHistory.get_count_of_all_history(form_id)
             del data["_id"]
@@ -46,25 +48,24 @@ class FormHistoryService:
     @staticmethod
     @user_context
     def created_form_logs_without_clone(data, **kwargs):
-        """Create form history"""
+        """Create form history."""
         user: UserContext = kwargs["user"]
         assert data is not None
         user_name = (user.user_name,)
         form_logs_data = {"change_log": {}}
-        if data.get("statusChanged") == True:
+        if data.get("statusChanged") is True:
             form_logs_data["status"] = True
             form_logs_data["change_log"] = {"status": data.get("status")}
-        if data.get("workflowChanged") == True:
+        if data.get("workflowChanged") is True:
             form_logs_data["workflow"] = True
             form_logs_data["change_log"]["workFlow"] = data.get("processKey")
-        if data.get("anonymousChanged") == True:
+        if data.get("anonymousChanged") is True:
             form_logs_data["anonymous"] = True
             form_logs_data["change_log"]["anonymous"] = data.get("anonymous")
-        if data.get("titleChanged") == True:
+        if data.get("titleChanged") is True:
             form_logs_data["title"] = True
             form_logs_data["change_log"]["form_name"] = data.get("formName")
-            
-            
+
         if len(form_logs_data.values()) > 1:
             form_logs_data["created_by"] = user_name
             form_logs_data["form_id"] = data.get("formId")
@@ -75,7 +76,7 @@ class FormHistoryService:
 
     @staticmethod
     def get_all_history(form_id: str):
-        """Get all history"""
+        """Get all history."""
         assert form_id is not None
         form_histories = FormHistory.fetch_histories_by_parent_id(form_id)
         if form_histories:
