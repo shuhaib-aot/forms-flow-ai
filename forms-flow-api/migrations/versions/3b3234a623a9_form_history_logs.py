@@ -1,4 +1,4 @@
-"""empty message
+"""Form history and logs
 
 Revision ID: 3b3234a623a9
 Revises: e664a2f70952

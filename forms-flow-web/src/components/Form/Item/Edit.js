@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Errors, FormBuilder } from "react-formio";
+import { Errors, FormBuilder, Formio } from "react-formio";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 import _set from "lodash/set";
@@ -264,6 +264,7 @@ const Edit = React.memo(() => {
       dispatch(setRestoreFormId(null));
       toast.success(t("Form Saved"));
       dispatch(setFormSuccessData("form", submittedData));
+      Formio.cache = {};
       dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
 
     }).catch((err) => {
