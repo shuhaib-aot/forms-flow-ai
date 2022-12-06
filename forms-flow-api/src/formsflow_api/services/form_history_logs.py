@@ -62,6 +62,9 @@ class FormHistoryService:
         if data.get("anonymousChanged") is True:
             form_logs_data["anonymous"] = True
             form_logs_data["change_log"]["anonymous"] = data.get("anonymous")
+        if data.get("formTypeChanged") is True:
+            form_logs_data["form_type"] = True
+            form_logs_data["change_log"]["form_type"] = data.get("formType")
         if data.get("titleChanged") is True:
             form_logs_data["title"] = True
             form_logs_data["change_log"]["form_name"] = data.get("formName")

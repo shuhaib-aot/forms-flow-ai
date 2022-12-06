@@ -21,6 +21,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     component_change = db.Column(db.Boolean, nullable=True)
     anonymous = db.Column(db.Boolean, nullable=True)
     status = db.Column(db.Boolean, nullable=True)
+    form_type = db.Column(db.Boolean, nullable=True)
 
     @classmethod
     def create_history(cls, data) -> "FormHistory":
@@ -33,6 +34,7 @@ class FormHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             history.workflow = data.get("workflow")
             history.title = data.get("title")
             history.status = data.get("status")
+            history.form_type = data.get("form_type")
             history.component_change = data.get("component_change")
             history.anonymous = data.get("anonymous")
             history.status = data.get("status")

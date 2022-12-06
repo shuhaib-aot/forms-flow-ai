@@ -14,6 +14,8 @@ class FormProcessMapperSchema(Schema):
     id = fields.Str(data_key="id")
     form_id = fields.Str(data_key="formId", required=True)
     form_name = fields.Str(data_key="formName", required=True)
+    form_type = fields.Str(data_key="formType")
+    parent_form_id = fields.Str(data_key="parentFormId")
     process_key = fields.Str(data_key="processKey")
     process_name = fields.Str(data_key="processName")
     comments = fields.Str(data_key="comments")

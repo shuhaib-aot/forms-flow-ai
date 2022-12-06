@@ -151,7 +151,10 @@ const Create = React.memo(() => {
         const data = {
           formId: form._id,
           formName: form.title,
+          formType: form.type,
+          formTypeChanged:true, 
           anonymousChanged:true,
+          parentFormId: form._id,
           titleChanged: true,
           formRevisionNumber: "V1", // to do
           anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),

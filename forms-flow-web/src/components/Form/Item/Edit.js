@@ -174,7 +174,7 @@ const Edit = React.memo(() => {
   }, [processListData]);
 
   const isNewMapperNeeded = () => {
-    return prviousData.formName !== form.title && applicationCount > 0;
+    return prviousData.formName !== form.title  && applicationCount > 0;
   };
 
 
@@ -193,7 +193,8 @@ const Edit = React.memo(() => {
     return (
       prviousData.formName !== newData.title ||
       prviousData.anonymous !== processListData.anonymous ||
-      processListData.anonymous === null
+      processListData.anonymous === null ||
+      processListData.formType !== newData.type
     );
   };
 // to check the component changed or not
@@ -228,12 +229,14 @@ const Edit = React.memo(() => {
               ? false
               : processListData.anonymous,
           formName: submittedData.title,
+          formType: submittedData.type,
           status: processListData.status ? processListData.status : INACTIVE,
           taskVariable: processListData.taskVariable
-            ? processListData.taskVariable
-            : [],
+          ? processListData.taskVariable
+          : [],
           id: processListData.id,
           formId: submittedData._id,
+          formTypeChanged: prviousData.formType !==  submittedData.type,
           anonymousChanged: prviousData.formName !==  submittedData.title,
           titleChanged: prviousData.anonymous !== processListData.anonymous
         };
