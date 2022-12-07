@@ -133,6 +133,14 @@ export const setBpmFormSearch = (data) => (dispatch) => {
   return Promise.resolve();
 };
 
+export const setBpmFormType = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_FORM_TYPE,
+    payload: data,
+  });
+  return Promise.resolve();
+};
+
 export const setBpmFormLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_FORM_LOADING,

@@ -18,11 +18,16 @@ export const fetchBPMFormList = (
   sortBy,
   sortOrder,
   formName,
+  formType,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    if(formType){
+      url += `&formType=${formType}`;
+    }
+
     if (formName) {
       url += `&formName=${formName}`;
     }
