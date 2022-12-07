@@ -14,7 +14,7 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import UniqueConstraint, and_, desc
+from sqlalchemy import UniqueConstraint, and_, desc, func
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
 
@@ -64,8 +64,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper = FormProcessMapper()
                 mapper.form_id = mapper_info["form_id"]
                 mapper.form_name = mapper_info["form_name"]
-                mapper.form_type = mapper_info['form_type']
-                mapper.parent_form_id = mapper_info['parent_form_id']
+                mapper.form_type = mapper_info["form_type"]
+                mapper.parent_form_id = mapper_info["parent_form_id"]
                 mapper.process_key = mapper_info.get("process_key")
                 mapper.process_name = mapper_info.get("process_name")
                 mapper.status = mapper_info.get("status")
@@ -173,8 +173,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active and inactive forms which are not deleted."""
+        # Get latest row for each form_id group
+        filtered_form_query = (
+            db.session.query(func.max(cls.id).label("id")).group_by(cls.form_id).all()
+        )
+        filtered_form_ids = [data.id for data in filtered_form_query]
         query = cls.filter_conditions(**filters)
-        query = query.filter(FormProcessMapper.deleted.is_(False))
+        query = query.filter(
+            and_(FormProcessMapper.deleted.is_(False)),
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
         query = cls.tenant_authorization(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:
