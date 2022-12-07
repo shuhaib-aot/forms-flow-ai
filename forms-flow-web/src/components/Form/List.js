@@ -200,6 +200,7 @@ const List = React.memo((props) => {
 
   const handleTypeChange = (type)=>{
     setFormType(type);
+    dispatch(setFormSearchLoading(true));
     dispatch(setBpmFormType(type));
 
   };
