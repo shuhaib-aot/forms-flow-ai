@@ -32,7 +32,7 @@ class FormProcessMapperService:
             sort_by=sort_by,
             sort_order=sort_order,
             form_type=form_type,
-        ) 
+        )
         mapper_schema = FormProcessMapperSchema()
         return (
             mapper_schema.dump(mappers, many=True),
