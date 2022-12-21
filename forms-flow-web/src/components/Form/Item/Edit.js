@@ -237,6 +237,27 @@ const Edit = React.memo(() => {
   return newFormData;
   };
 
+  const setFormProcessDatatoVariable = (submittedData)=>{
+    const data = {
+      anonymous:
+        processListData.anonymous === null
+          ? false
+          : processListData.anonymous,
+      formName: submittedData.title,
+      formType: submittedData.type,
+      status: processListData.status ? processListData.status : INACTIVE,
+      taskVariable: processListData.taskVariable
+      ? processListData.taskVariable
+      : [],
+      id: processListData.id,
+      formId: submittedData._id,
+      formTypeChanged: prviousData.formType !==  submittedData.type,
+      titleChanged: prviousData.formName !==  submittedData.title,
+      anonymousChanged: prviousData.anonymous !== processListData.anonymous
+    };
+    return data;
+  };
+
   const saveAsNewVersion = () =>{
     closeOptionModal();
     setFormSubmitted(true);
@@ -250,29 +271,13 @@ const Edit = React.memo(() => {
     delete newFormData._id;
     formCreate(newFormData).then((res)=>{
       const {data:submittedData} = res;
-      const data = {
-        anonymous:
-          processListData.anonymous === null
-            ? false
-            : processListData.anonymous,
-        formName: submittedData.title,
-        formType: submittedData.type,
-        previousFormId:parentFormId,
-        status: processListData.status ? processListData.status : INACTIVE,
-        taskVariable: processListData.taskVariable
-        ? processListData.taskVariable
-        : [],
-        id: processListData.id,
-        formId: submittedData._id,
-        formRevisionNumber: "V1",
-        formTypeChanged: prviousData.formType !==  submittedData.type,
-        titleChanged: prviousData.formName !==  submittedData.title,
-        anonymousChanged: prviousData.anonymous !== processListData.anonymous
-      };
+      const data =  setFormProcessDatatoVariable(submittedData);
+      data.formRevisionNumber = "V1",
       data["version"] = String(+prviousData.version + 1);
       data["processKey"] = prviousData.processKey;
       data["processName"] = prviousData.processName;
       data.parentFormId = parentFormId,
+      data.previousFormId = parentFormId,
       Formio.cache = {};
       dispatch(saveFormProcessMapperPost(data));
       dispatch(unPublishForm(prviousData.id));
@@ -298,23 +303,7 @@ const Edit = React.memo(() => {
     formUpdate(newFormData._id, newFormData).then((res)=>{
       const {data:submittedData} = res;
       if (isMapperSaveNeeded(submittedData)) {
-        const data = {
-          anonymous:
-            processListData.anonymous === null
-              ? false
-              : processListData.anonymous,
-          formName: submittedData.title,
-          formType: submittedData.type,
-          status: processListData.status ? processListData.status : INACTIVE,
-          taskVariable: processListData.taskVariable
-          ? processListData.taskVariable
-          : [],
-          id: processListData.id,
-          formId: submittedData._id,
-          formTypeChanged: prviousData.formType !==  submittedData.type,
-          titleChanged: prviousData.formName !==  submittedData.title,
-          anonymousChanged: prviousData.anonymous !== processListData.anonymous
-        };
+        const data = setFormProcessDatatoVariable(submittedData);
 
         // PUT request : when application count is zero.
         // POST request with updated version : when application count is positive.
@@ -433,7 +422,7 @@ const Edit = React.memo(() => {
               </button>
               <Modal show={showModalOptions} onHide={()=>{closeOptionModal();}}>
                 <Modal.Header closeButton>
-                  <Modal.Title>{t("Confirmation")}</Modal.Title>
+                  <Modal.Title>{t("Choose option")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                    <ul>
@@ -450,7 +439,7 @@ const Edit = React.memo(() => {
                     {t("Cancel")}
                   </Button>
                   <Button variant="primary" onClick={() => saveAsNewVersion()}>
-                    Save as new Version
+                    Save as new version
                   </Button>
                   <Button variant="primary" onClick={() => saveFormWithDataChangeCheck ()}>
                     {t("Save Form")}
