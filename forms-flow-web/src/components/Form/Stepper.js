@@ -264,6 +264,7 @@ class StepperPage extends PureComponent {
 
     data.workflowChanged = data?.processKey !== formPreviousData.processKey;
     data.statusChanged =  processData?.status !== formPreviousData.status;
+    data.parentFormId = processData?.parentFormId;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
