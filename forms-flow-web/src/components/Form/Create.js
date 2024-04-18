@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { FormBuilder, Errors } from "react-formio";
+import { FormBuilder, Errors } from "@formio/react";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -27,7 +27,7 @@ import RichText from "../Form/RichText";
 import { Collapse } from 'react-bootstrap';
 
 
-// reducer from react-formio code
+// reducer from @formio/react code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
