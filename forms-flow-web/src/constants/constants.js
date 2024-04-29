@@ -59,7 +59,7 @@ export const MULTITENANCY_ENABLED =
     ? true
     : false;
 
-export const BASE_ROUTE = MULTITENANCY_ENABLED ? "/tenant/:tenantId/" : "/";
+export const BASE_ROUTE = MULTITENANCY_ENABLED ? "tenant/:tenantId/" : "/";
 
 export const Keycloak_Tenant_Client = "forms-flow-web";
 

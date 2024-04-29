@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo } from "react";
-import { Route, Switch, Redirect, useParams } from "react-router-dom";
+import React, { useEffect, Suspense, useMemo } from "react";
+import { Route, Redirect, useParams, Routes, Navigate, Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
@@ -36,12 +36,12 @@ import { setTenantFromId } from "../apiManager/services/tenantServices";
 // Lazy imports is having issues with micro-front-end build
 
 import Form from "./Form";
-import ServiceFlow from "./ServiceFlow";
-import DashboardPage from "./Dashboard";
-import InsightsPage from "./Insights";
-import Application from "./Application";
-import Modeler from "./Modeler";
-import Drafts from "./Draft";
+// import ServiceFlow from "./ServiceFlow";
+// import DashboardPage from "./Dashboard";
+// import InsightsPage from "./Insights";
+// import Application from "./Application";
+// import Modeler from "./Modeler";
+// import Drafts from "./Draft";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -75,7 +75,7 @@ const PrivateRoute = React.memo((props) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
-  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
+  // const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
 
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
 
@@ -141,21 +141,28 @@ const PrivateRoute = React.memo((props) => {
 
   // useMemo prevents unneccessary rerendering caused by the route update.
 
-  const DesignerRoute = useMemo(
+  // const DesignerRoute = useMemo(
+  //   () =>
+  //     ({ component: Component, ...rest }) =>
+  //       (
+  //         <Route
+  //           {...rest}
+  //           render={(props) =>
+  //             userRoles.includes(STAFF_DESIGNER) ? (
+  //               <Component {...props} />
+  //             ) : (
+  //               <>unauthorized</>
+  //             )
+  //           }
+  //         />
+  //       ),
+  //   [userRoles]
+  // );
+
+  
+    const DesignerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              userRoles.includes(STAFF_DESIGNER) ? (
-                <Component {...props} />
-              ) : (
-                <>unauthorized</>
-              )
-            }
-          />
-        ),
+      ({ element }) =>userRoles.includes(STAFF_DESIGNER) ? element : <Navigate to="/unauthorized" replace />,
     [userRoles]
   );
 
@@ -219,14 +226,19 @@ const PrivateRoute = React.memo((props) => {
     <>
       {isAuth ? (
         <Suspense fallback={<Loading />}>
-          <Switch>
-            {ENABLE_FORMS_MODULE && (
-              <Route path={`${BASE_ROUTE}form`} component={Form} />
+          <Routes>
+           
+          <Route path={`form/*`} element={<Form />} />
+          <Route path={`formflow/*`} element={<DesignerRoute element={<Form/>}/>} />
+           
+            
+            {/* {ENABLE_FORMS_MODULE && (
+              <Route path={`form`} element={<Form />} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
-            )}
-            {ENABLE_APPLICATIONS_MODULE && (
+              <DesignerRoute path={`formflow`} element={<h1>asdfasdf</h1>} />
+            )} */}
+            {/* {ENABLE_APPLICATIONS_MODULE && (
               <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
@@ -272,8 +284,8 @@ const PrivateRoute = React.memo((props) => {
               />}
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
-            <Redirect from="*" to="/404" />
-          </Switch>
+            <Redirect from="*" to="/404" /> */}
+          </Routes>
         </Suspense>
       ) : (
         <Loading />

@@ -1,32 +1,34 @@
+/* eslint-disable */
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import List from "./List";
 import Stepper from "./Stepper";
-import Item from "./Item/index";
+// import Item from "./Item/index";
 import {
   STAFF_DESIGNER,
   STAFF_REVIEWER,
   CLIENT,
-  BASE_ROUTE,
+  // BASE_ROUTE,
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 
 let user = "";
 
-const CreateFormRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) => {
-      if (user.includes(STAFF_DESIGNER)) {
-        return <Component {...props} />;
-      } else {
-        return <>Unauthorized</>;
-      }
-    }}
-  />
-);
+// const CreateFormRoute = ({ element}) =>  
+
+//   <Route
+//     {...rest}
+//     render={(props) => {
+//       if (user.includes(STAFF_DESIGNER)) {
+//         return <Component {...props} />;
+//       } else {
+//         return <>Unauthorized</>;
+//       }
+//     }}
+//   />
+// );
 const FormSubmissionRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
@@ -47,18 +49,21 @@ export default React.memo(() => {
     return <Loading />;
   }
   return (
-    <div data-testid="Form-index">
-      <Switch>
-        <Route exact path={`${BASE_ROUTE}form`} component={List} />
-        <CreateFormRoute
+    
+      <Routes>
+       
+        <Route path="form" element={<List/>} />
+        <Route path="formsflow" element={<>asdfsdfasd</>} />
+        {/* <CreateFormRoute
           path={`${BASE_ROUTE}formflow/:formId?/:step?`}
           component={Stepper}
         />
         <FormSubmissionRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={Item}
-        />
-      </Switch>
-    </div>
+        /> */}
+        
+      </Routes>
+    
   );
 });
