@@ -96,11 +96,11 @@ function FormTable() {
     dispatch(setBPMFormListPage(1));
   };
 
-  const viewOrEditForm = (formId,path) => {
+  const viewOrEditForm = (formId) => {
     dispatch(resetFormProcessData());
-    dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
+    dispatch(push(`${redirectUrl}formflow/${formId}/view-edit`));
   };
- 
+
   const submitNewForm = (formId)=>{
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
@@ -170,8 +170,8 @@ function FormTable() {
         <tr>
           <td colSpan="10">
             <div
-              className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100"
-              
+              className="d-flex align-items-center justify-content-center flex-column w-100"
+              style={{ minHeight: "300px" }}
             >
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
@@ -184,7 +184,7 @@ function FormTable() {
   return (
     <>
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400" >
+        <div style={{ minHeight: "400px" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr >
@@ -195,24 +195,30 @@ function FormTable() {
                     <span>
                       {isAscending ? (
                         <i
-                          data-testid="form-desc-sort-icon"
-                          className="fa fa-sort-alpha-asc cursor-pointer fs-16 ms-2 mt-1"
+                          className="fa fa-sort-alpha-asc ms-2 mt-1"
                           onClick={() => {
                             updateSort("desc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Ascending")}>
-
-                          </i>
+                          title={t("Ascending")}
+                          style={{
+                            cursor: "pointer",
+                            fontSize: "16px",
+                          }}
+                        ></i>
                       ) : (
                         <i
-                          data-testid="form-asc-sort-icon"
-                          className="fa fa-sort-alpha-desc cursor-pointer fs-16 ms-2 mt-1"
+                          className="fa fa-sort-alpha-desc ms-2 mt-1"
                           onClick={() => {
                             updateSort("asc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Descending")}></i>
+                          title={t("Descending")}
+                          style={{
+                            cursor: "pointer",
+                            fontSize: "16px",
+                          }}
+                        ></i>
                       )}
                     </span>
                   </div>
@@ -224,7 +230,6 @@ function FormTable() {
                 <th colSpan="4" aria-label="Search Forms by form title">
                   <InputGroup className="input-group p-0">
                     <FormControl
-                    className="bg-white"
                       value={search}
                       onChange={(e) => {
                         setSearch(e.target.value);
@@ -233,24 +238,23 @@ function FormTable() {
                       placeholder={t("Search by form title")}
                       title={t("Search by form title")}
                       data-testid="form-search-input-box"
+                      style={{  backgroundColor: "#ffff" }}
                     />
                     {search && (
-                      <InputGroup.Append onClick={handleClearSearch} data-testid="form-search-clear-button">
-                        <InputGroup.Text className="h-100">
+                    
+                        <InputGroup.Text onClick={handleClearSearch} data-testid="form-search-cear-button" className="cursor-pointer bg-white">
                           <i className="fa fa-times"></i>
                         </InputGroup.Text>
-                      </InputGroup.Append>
+                     
                     )}
-                    <InputGroup.Append
-                      onClick={handleSearch}
+                 
+                      <InputGroup.Text  onClick={handleSearch}
                       data-testid="form-search-click-button"
                       disabled={!search?.trim()}
-                      className="cursor-pointer"
-                    >
-                      <InputGroup.Text className="h-100 bg-white">
+                        className="cursor-pointer bg-white">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
-                    </InputGroup.Append>
+                    
                   </InputGroup>
                 </th>
               </tr>
@@ -263,7 +267,8 @@ function FormTable() {
                     <tr key={index}>
                       {isDesigner && (
                         <td>
-                          <div className="d-flex"
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
                           >
                             <span className="">
                               <SelectFormForDownload form={e} />
@@ -292,38 +297,25 @@ function FormTable() {
 
                       <td>
                         <button
-                          data-testid={`form-edit-button-${e._id}`}
+                          data-testid={`form-view-or-edit-button-${e._id}`}
                           className="btn btn-link text-primary mt-2"
-                          onClick={() => viewOrEditForm(e._id,'edit')}
+                          onClick={() => viewOrEditForm(e._id)}
                         >
-                          <Translation>{(t) => t("Edit Form")}</Translation>{" "}
+                          <Translation>{(t) => t("View Details")}</Translation>{" "}
                         </button>
                       </td>
                       <td>
-                        <Dropdown 
-                         data-testid={`designer-form-option-${e._id}`}
-                         data-bs-toggle="tooltip" 
-                         data-bs-placement="bottom"
-                         title={t("More options")}>
+                        <Dropdown data-testid={`designer-form-option-${e._id}`}>
                           <Dropdown.Toggle
                             data-testid={`designer-form-option-toggle-${e._id}`}
                             as={CustomToggle}
                             id="dropdown-basic"
+                            title={t("More options")}
                             aria-describedby="More-options"
                           >
                             <i className="fa-solid fa-ellipsis"></i>
                           </Dropdown.Toggle>
                           <Dropdown.Menu className="shadow  bg-white">
-                          <Dropdown.Item
-                                onClick={() => {
-                                  viewOrEditForm(e?._id,'view-edit');
-                                }}
-                                data-testid={`designer-form-option-${e._id}-view-details`}
-                              > 
-                                <i className="fa-solid me-2 fa-arrow-up-right-from-square text-primary"></i>
-                                {t("View Details")}
-                              </Dropdown.Item>
-
                             {userRoles.includes(STAFF_REVIEWER) ||
                             userRoles.includes(CLIENT) ? (
                               <Dropdown.Item
@@ -336,8 +328,6 @@ function FormTable() {
                                 {t("Submit New")}
                               </Dropdown.Item>
                             ) : null}
-
-
                             <Dropdown.Item onClick={() => deleteForms(e)}
                              data-testid={`designer-form-option-${e._id}-delete`}>
                               <i className="fa fa-trash me-2 text-danger" />
@@ -353,7 +343,7 @@ function FormTable() {
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              null
+              ""
             )}
           </table>
         </div>

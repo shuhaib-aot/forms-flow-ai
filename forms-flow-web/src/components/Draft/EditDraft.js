@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Loading from "../../containers/Loading";
-import { getForm, getSubmission } from "react-formio";
+import { getForm, getSubmission } from "@formio/react";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";
 import Edit from "./Edit";
