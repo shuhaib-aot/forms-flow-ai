@@ -106,7 +106,9 @@ function ClientTable() {
         <tr>
           <td colSpan="3">
             <div
-              className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100">
+              className="d-flex align-items-center justify-content-center flex-column w-100"
+              style={{ minHeight: "300px" }}
+            >
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
             </div>
@@ -137,7 +139,7 @@ function ClientTable() {
   return (
     <>
       <LoadingOverlay active={searchFormLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400">
+        <div style={{ minHeight: "400px" }}>
           <table className="table custom-table table-responsive-sm">
             <thead>
               <tr>
@@ -146,31 +148,37 @@ function ClientTable() {
                     <span>{t("Form Title")}</span>
                     <span>
                       {isAscending ? (
-                        <i 
-                          data-testid="form-desc-sort-icon"
-                          className="fa fa-sort-alpha-asc ms-2 cursor-pointer fs-16"
+                        <i
+                          className="fa fa-sort-alpha-asc ms-2"
                           onClick={() => {
                             updateSort("desc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Descending")}>
-                        </i>
+                          title={t("Descending")}
+                          style={{
+                            cursor: "pointer",
+                            fontSize: "16px",
+                          }}
+                        ></i>
                       ) : (
                         <i
-                          data-testid="form-asc-sort-icon"
-                          className="fa fa-sort-alpha-desc ms-2 cursor-pointer fs-16"
+                          className="fa fa-sort-alpha-desc ms-2"
                           onClick={() => {
                             updateSort("asc");
                           }}
                           data-toggle="tooltip"
-                          title={t("Ascending")}>
-                        </i>
+                          title={t("Ascending")}
+                          style={{
+                            cursor: "pointer",
+                            fontSize: "16px",
+                          }}
+                        ></i>
                       )}
                     </span>
                   </div>
                 </th>
                 <th>{t("Form Description")}</th>
-                <th colSpan="4" aria-label="Search Forms by form title" >
+                <th colSpan="4">
                   <InputGroup className="input-group p-0 w-100">
                     <FormControl
                       value={search}
@@ -180,31 +188,27 @@ function ClientTable() {
                       onKeyDown={(e) =>
                         e.keyCode === 13 ? handleSearch() : ""
                       }
-                      className="bg-white"
                       data-testid="form-search-input-box"
                       placeholder={t("Search by form title")}
+                      className="bg-white"
                       title={t("Search by form title")}
                     />
                     {search && (
-                      <InputGroup.Append
-                        onClick={handleClearSearch}
-                        data-testid="form-search-clear-button"
-                      >
-                        <InputGroup.Text className="h-100">
+ 
+                        <InputGroup.Text  onClick={handleClearSearch}
+                        data-testid="form-search-cear-button" className="bg-white cursor-pointer">
                           <i className="fa fa-times "></i>
                         </InputGroup.Text>
-                      </InputGroup.Append>
+ 
                     )}
-                    <InputGroup.Append
-                      className="cursor-pointer"
-                      onClick={handleSearch}
+ 
+                      <InputGroup.Text  onClick={handleSearch}
                       data-testid="form-search-click-button"
                       disabled={!search?.trim()}
-                    >
-                      <InputGroup.Text className="h-100 bg-white">
+                     className="bg-white cursor-pointer">
                         <i className="fa fa-search"></i>
                       </InputGroup.Text>
-                    </InputGroup.Append>
+ 
                   </InputGroup>
                 </th>
               </tr>
@@ -241,7 +245,11 @@ function ClientTable() {
                       </td>
                       <td
                         data-testid={`form-description${e._id}`}
-                        className="text-truncate">
+                        className="text-truncate"
+                        style={{
+                          maxWidth: "350px",
+                        }}
+                      >
                         {extractContent(e.description)}
                       </td>
 
@@ -265,6 +273,7 @@ function ClientTable() {
                             </h4>
 
                             <div
+                              style={{ maxWidth: "68vw" }}
                               className="form-description-p-tag "
                               dangerouslySetInnerHTML={{
                                 __html: sanitize(e?.description, {
@@ -282,7 +291,7 @@ function ClientTable() {
             ) : !searchFormLoading ? (
               noDataFound()
             ) : (
-              null
+              ""
             )}
           </table>
         </div>
